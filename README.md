@@ -1,0 +1,1 @@
+CGT : composite generator technique!
