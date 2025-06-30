@@ -1,6 +1,0 @@
--r production.txt
-
-coverage
-pytest
-pytest-cov
-pytest-sugar
