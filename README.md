@@ -29,20 +29,4 @@
   - NB: If you wish to analise the docker container and it's logs remove the `--rm` tag.
   - NB: Make sure that the folders are accessable to docker
 
-## How to run Auger?
-1. Clone the repo
-2. Navigate to auger-python
-3. Make sure you in the same folder as setup.py
-4. Run these commands:
-   `python setup.py build`,
-   `python setup.py install`
-5. Use the instrunctions on the Auger README.md file for examples on how to run it!
-
-## How to run pyutgenerator?
-1. Using the console run this command:
-    `pip install pyutgenerator`
-
-# Test generator tools used
   ## Pynguin (modified)
-  ## Auger (modified)
-  ## pyutgenerator
