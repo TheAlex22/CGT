@@ -176,5 +176,6 @@ pyrightconfig.json
 # Custom folders
 ./ManyTypes4PyDataset-v0.3
 ./BugsInPy
+BugsInPy/*
 
 # End of https://www.toptal.com/developers/gitignore/api/python
