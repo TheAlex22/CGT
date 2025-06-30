@@ -1,4 +1,9 @@
 # CGT : composite generator technique!
+This repository is part of a Bachelor degree project 2025.
+
+The results of the experiment are found in the "Results.md" file.
+All the generated test suites as well as the composite ones are found in the "results test suite".
+
 ## How to run pynguin?
 1. Install docker
 2. clone the repo
