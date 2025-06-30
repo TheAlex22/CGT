@@ -1,131 +1,165 @@
-import types
+from functools import reduce
 
-from importlib.util import module_from_spec, spec_from_file_location
-from os import environ as os_environ
-from pathlib import Path
-from re import findall as re_findall
-from typing import Union
-
-from sanic.exceptions import LoadFileException, PyFileError
-from sanic.helpers import import_string
+from typing import TypeVar, Callable, List, Tuple, Any
 
 
-def str_to_bool(val: str) -> bool:
-    """Takes string and tries to turn it into bool as human would do.
-
-    If val is in case insensitive (
-        "y", "yes", "yep", "yup", "t",
-        "true", "on", "enable", "enabled", "1"
-    ) returns True.
-    If val is in case insensitive (
-        "n", "no", "f", "false", "off", "disable", "disabled", "0"
-    ) returns False.
-    Else Raise ValueError."""
-
-    val = val.lower()
-    if val in {
-        "y",
-        "yes",
-        "yep",
-        "yup",
-        "t",
-        "true",
-        "on",
-        "enable",
-        "enabled",
-        "1",
-    }:
-        return True
-    elif val in {"n", "no", "f", "false", "off", "disable", "disabled", "0"}:
-        return False
-    else:
-        raise ValueError(f"Invalid truth value {val}")
+T = TypeVar('T')
 
 
-def load_module_from_file_location(
-    location: Union[bytes, str, Path], encoding: str = "utf8", *args, **kwargs
-):  # noqa
-    """Returns loaded module provided as a file path.
-
-    :param args:
-        Corresponds to importlib.util.spec_from_file_location location
-        parameters,but with this differences:
-        - It has to be of a string or bytes type.
-        - You can also use here environment variables
-          in format ${some_env_var}.
-          Mark that $some_env_var will not be resolved as environment variable.
-    :encoding:
-        If location parameter is of a bytes type, then use this encoding
-        to decode it into string.
-    :param args:
-        Corresponds to the rest of importlib.util.spec_from_file_location
-        parameters.
-    :param kwargs:
-        Corresponds to the rest of importlib.util.spec_from_file_location
-        parameters.
-
-    For example You can:
-
-        some_module = load_module_from_file_location(
-            "some_module_name",
-            "/some/path/${some_env_var}"
-        )
+def curry(x, args_count=None):
     """
-    if isinstance(location, bytes):
-        location = location.decode(encoding)
+    In mathematics and computer science, currying is the technique of translating the evaluation of a function.
+    It that takes multiple arguments (or a tuple of arguments) into evaluating a sequence of functions.
+    each with a single argument.
+    """
+    if args_count is None:
+        args_count = x.__code__.co_argcount
 
-    if isinstance(location, Path) or "/" in location or "$" in location:
-        if not isinstance(location, Path):
-            # A) Check if location contains any environment variables
-            #    in format ${some_env_var}.
-            env_vars_in_location = set(re_findall(r"\${(.+?)}", location))
+    def fn(*args):
+        if len(args) == args_count:
+            return x(*args)
+        return curry(lambda *args1: x(*(args + args1)), args_count - len(args))
+    return fn
 
-            # B) Check these variables exists in environment.
-            not_defined_env_vars = env_vars_in_location.difference(
-                os_environ.keys()
-            )
-            if not_defined_env_vars:
-                raise LoadFileException(
-                    "The following environment variables are not set: "
-                    f"{', '.join(not_defined_env_vars)}"
-                )
 
-            # C) Substitute them in location.
-            for env_var in env_vars_in_location:
-                location = location.replace(
-                    "${" + env_var + "}", os_environ[env_var]
-                )
+def identity(value: T) -> T:
+    """
+    Return first argument.
 
-        location = str(location)
-        if ".py" in location:
-            name = location.split("/")[-1].split(".")[
-                0
-            ]  # get just the file name without path and .py extension
-            _mod_spec = spec_from_file_location(
-                name, location, *args, **kwargs
-            )
-            assert _mod_spec is not None  # type assertion for mypy
-            module = module_from_spec(_mod_spec)
-            _mod_spec.loader.exec_module(module)  # type: ignore
+    :param value:
+    :type value: Any
+    :returns:
+    :rtype: Any
+    """
+    return value
 
-        else:
-            module = types.ModuleType("config")
-            module.__file__ = str(location)
-            try:
-                with open(location) as config_file:
-                    exec(  # nosec
-                        compile(config_file.read(), location, "exec"),
-                        module.__dict__,
-                    )
-            except OSError as e:
-                e.strerror = "Unable to load configuration file (e.strerror)"
-                raise
-            except Exception as e:
-                raise PyFileError(location) from e
 
-        return module
-    else:
-        try:
-            return import_string(location)
-        except ValueError:
-            raise OSError("Unable to load configuration %s" % str(location))
+def increase(value: int) -> int:
+    """
+    Return increased by 1 argument.
+
+    :param value:
+    :type value: Int
+    :returns:
+    :rtype: Int
+    """
+    return value + 1
+
+
+@curry
+def eq(value, value1) -> bool:
+    return value == value1
+
+
+@curry
+def curried_map(mapper, collection):
+    return [mapper(item) for item in collection]
+
+
+@curry
+def curried_filter(filterer, collection):
+    return [item for item in collection if filterer(item)]
+
+
+@curry
+def find(collection: List[T], key: Callable[[T], bool]):
+    """
+    Return the first element of the list which matches the keys, or None if no element matches.
+
+    :param collection: collection to search
+    :type collection: List[A]
+    :param key: function to decide witch element should be found
+    :type key: Function(A) -> Boolean
+    :returns: element of collection or None
+    :rtype: A | None
+    """
+    for item in collection:
+        if key(item):
+            return item
+
+
+def compose(value, *functions):
+    """
+    Perform right-to-left function composition.
+
+    :param value: argument of first applied function
+    :type value: Any
+    :param functions: list of functions to applied from right-to-left
+    :type functions: List[Function]
+    :returns: result of all functions
+    :rtype: Any
+    """
+    return reduce(
+        lambda current_value, function: function(current_value),
+        functions[::-1],
+        value
+    )
+
+
+def pipe(value, *functions):
+    """
+    Perform left-to-right function composition.
+
+    :param value: argument of first applied function
+    :type value: Any
+    :param functions: list of functions to applied from left-to-right
+    :type functions: List[Function]
+    :returns: result of all functions
+    :rtype: Any
+    """
+    return reduce(
+        lambda current_value, function: function(current_value),
+        functions,
+        value
+    )
+
+
+def cond(condition_list: List[Tuple[
+    Callable[[T], bool],
+    Callable,
+]]):
+    """
+    Function for return function depended on first function argument
+    cond get list of two-item tuples,
+    first is condition_function, second is execute_function.
+    Returns this execute_function witch first condition_function return truly value.
+
+    :param condition_list: list of two-item tuples (condition_function, execute_function)
+    :type condition_list: List[(Function, Function)]
+    :returns: Returns this execute_function witch first condition_function return truly value
+    :rtype: Function
+    """
+    def result(*args):
+        for (condition_function, execute_function) in condition_list:
+            if condition_function(*args):
+                return execute_function(*args)
+
+    return result
+
+
+def memoize(fn: Callable, key=eq) -> Callable:
+    """
+    Create a new function that, when invoked,
+    caches the result of calling fn for a given argument set and returns the result.
+    Subsequent calls to the memoized fn with the same argument set will not result in an additional call to fn;
+    instead, the cached result for that set of arguments will be returned.
+
+    :param fn: function to invoke
+    :type fn: Function(A) -> B
+    :param key: function to decide if result should be taken from cache
+    :type key: Function(A, A) -> Boolean
+    :returns: new function invoking old one
+    :rtype: Function(A) -> B
+    """
+    cache: List[Any] = []
+
+    def memoized_fn(argument):
+        cached_result = find(cache, lambda cacheItem: key(cacheItem[0], argument))
+        if cached_result is not None:
+            return cached_result[1]
+        fn_result = fn(argument)
+        cache.append((argument, fn_result))
+
+        return fn_result
+
+    return memoized_fn

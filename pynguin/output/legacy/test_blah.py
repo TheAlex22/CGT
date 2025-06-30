@@ -16,7 +16,7 @@ def test_case_0():
 
 @pytest.mark.xfail(strict=True)
 def test_case_1():
-    bool_0 = False
+    bool_0 = False 
     bool_1 = module_0.is_both(bool_0)
     list_0 = [bool_0, bool_0]
     bool_2 = module_0.is_middling_number(bool_0)

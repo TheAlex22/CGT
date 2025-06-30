@@ -4,55 +4,119 @@ import pytest
 import utils as module_0
 
 
+@pytest.mark.xfail(strict=True)
 def test_case_0():
-    str_0 = "C"
-    with pytest.raises(ValueError):
-        module_0.str_to_bool(str_0)
+    module_0.fn()
 
 
 def test_case_1():
-    bytes_0 = b"*"
-    with pytest.raises(OSError):
-        module_0.load_module_from_file_location(bytes_0)
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+    list_0 = [var_0, var_0]
+    var_1 = module_0.curry(var_0, var_0)
+    var_2 = module_0.compose(tuple_0, *list_0)
 
 
-@pytest.mark.xfail(strict=True)
 def test_case_2():
-    str_0 = "rdKt|3U/Scsj3c:XQW\n"
-    module_0.load_module_from_file_location(str_0, str_0)
+    tuple_0 = ()
+    var_0 = module_0.identity(tuple_0)
 
 
 @pytest.mark.xfail(strict=True)
 def test_case_3():
-    str_0 = "Reset the response object.\n\n        This clears much of the state of the object. It should\n        generally not be called directly, but is called automatically as\n        part of the request lifecycle.\n\n        Raises:\n            sanic.exceptions.ServerError: If the response has already been\n                sent.\n        "
-    module_0.load_module_from_file_location(str_0, str_0)
+    none_type_0 = None
+    module_0.increase(none_type_0)
 
 
 def test_case_4():
-    str_0 = "t"
-    bool_0 = module_0.str_to_bool(str_0)
-    assert bool_0 is True
-    with pytest.raises(OSError):
-        module_0.load_module_from_file_location(str_0)
+    tuple_0 = ()
+    var_0 = module_0.compose(tuple_0)
 
 
-@pytest.mark.xfail(strict=True)
 def test_case_5():
-    str_0 = "~R,0\x0cV{\r&bH,T-${'p:~"
-    module_0.load_module_from_file_location(str_0)
-
-
-def test_case_6():
-    str_0 = "Retrieve the current request object\n\n        This implements [Context Variables](https://docs.python.org/3/library/contextvars.html)\n        to allow for accessing the current request from anywhere.\n\n        A typical usecase is when you want to access the current request\n        from a function that is not a handler, such as a logging function:\n\n        ```python\n        import logging\n\n        class LoggingFormater(logging.Formatter):\n            def format(self, record):\n                request = Request.get_current()\n                record.url = request.url\n                record.ip = request.ip\n                return super().format(record)\n        ```\n\n        Returns:\n            Request: The current request object\n\n        Raises:\n            sanic.exceptions.ServerError: If it is outside of a request\n                lifecycle.\n        "
-    with pytest.raises(AssertionError):
-        module_0.load_module_from_file_location(str_0)
+    tuple_0 = ()
+    var_0 = module_0.pipe(tuple_0)
 
 
 @pytest.mark.xfail(strict=True)
+def test_case_6():
+    bytes_0 = b"\x95\x1a_\xe1g'\xc0\xc2\xe1\xcb\xf9\x8b-\xb2\x1f\x17?"
+    list_0 = [bytes_0, bytes_0, bytes_0, bytes_0]
+    module_0.pipe(bytes_0, *list_0)
+
+
 def test_case_7():
-    str_0 = "F"
-    bool_0 = module_0.str_to_bool(str_0)
-    assert bool_0 is False
-    float_0 = -2679.72148
-    list_0 = []
-    module_0.load_module_from_file_location(float_0, *list_0)
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+
+
+def test_case_8():
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+    list_0 = [var_0, var_0]
+    var_1 = module_0.memoize(var_0, var_0)
+    var_2 = module_0.compose(tuple_0, *list_0)
+
+
+def test_case_9():
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+    list_0 = [var_0]
+    var_1 = module_0.compose(tuple_0, *list_0)
+
+
+@pytest.mark.xfail(strict=True)
+def test_case_10():
+    bool_0 = False
+    list_0 = [bool_0, bool_0, bool_0]
+    var_0 = module_0.cond(list_0)
+    int_0 = module_0.increase(bool_0)
+    assert int_0 == 1
+    list_1 = [var_0]
+    module_0.compose(list_1, *list_1)
+
+
+@pytest.mark.xfail(strict=True)
+def test_case_11():
+    tuple_0 = ()
+    var_0 = module_0.memoize(tuple_0, tuple_0)
+    list_0 = [var_0, var_0]
+    callable_0 = module_0.memoize(var_0, var_0)
+    module_0.compose(tuple_0, *list_0)
+
+
+@pytest.mark.xfail(strict=True)
+def test_case_12():
+    bool_0 = False
+    var_0 = module_0.identity(bool_0)
+    var_1 = module_0.curry(var_0, var_0)
+    int_0 = module_0.increase(bool_0)
+    assert int_0 == 1
+    list_0 = [var_1]
+    var_2 = module_0.compose(list_0, *list_0)
+    var_3 = module_0.cond(var_2)
+    int_1 = module_0.increase(var_0)
+    assert int_1 == 1
+    module_0.fn()
+
+
+@pytest.mark.xfail(strict=True)
+def test_case_13():
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+    callable_0 = module_0.memoize(var_0)
+    list_0 = [callable_0]
+    var_1 = module_0.compose(list_0, *list_0)
+    var_2 = module_0.pipe(var_0, *list_0)
+    module_0.increase(callable_0)
+
+
+@pytest.mark.xfail(strict=True)
+def test_case_14():
+    tuple_0 = ()
+    var_0 = module_0.cond(tuple_0)
+    callable_0 = module_0.memoize(var_0)
+    list_0 = [callable_0, callable_0]
+    var_1 = module_0.compose(list_0, *list_0)
+    var_2 = module_0.pipe(callable_0, *list_0)
+    module_0.increase(callable_0)
